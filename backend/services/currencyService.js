@@ -7,6 +7,14 @@ const getExchangeRate = async (fromCurrency) => {
 
   try {
     const apiKey = process.env.EXCHANGE_RATE_API_KEY;
+
+    if (!apiKey) {
+      console.log(
+        "Exchange rate API key not configured. Skipping conversion (1:1).",
+      );
+      return 1.0;
+    }
+
     // Using ExchangeRate-API (Free tier)
     const url = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${fromCurrency}/${baseCurrency}`;
 

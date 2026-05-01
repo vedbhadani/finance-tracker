@@ -1,19 +1,34 @@
 const nodemailer = require("nodemailer");
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  auth: {
-    user: process.env.SMTP_USER,
-    password: process.env.SMTP_PASS,
-  },
-});
+const isEmailConfigured = !!(
+  process.env.SMTP_HOST &&
+  process.env.SMTP_USER &&
+  process.env.SMTP_PASS
+);
+
+let transporter = null;
+
+if (isEmailConfigured) {
+  transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    auth: {
+      user: process.env.SMTP_USER,
+      password: process.env.SMTP_PASS,
+    },
+  });
+}
 
 /**
  * Send a generic email
  * @param {Object} options - { email, subject, message }
  */
 const sendEmail = async (options) => {
+  if (!transporter) {
+    console.log("Email service not configured. Skipping email send.");
+    return;
+  }
+
   const mailOptions = {
     from: process.env.EMAIL_FROM,
     to: options.email,
