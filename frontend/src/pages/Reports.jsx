@@ -65,7 +65,7 @@ const Reports = () => {
             label: "Amount ($)",
             data: [
               report.summary.total_income,
-              report.summary.total_expenses,
+              report.summary.total_expense,
               report.summary.savings,
             ],
             backgroundColor: ["#4caf50", "#f44336", "#2196f3"],
@@ -76,10 +76,10 @@ const Reports = () => {
 
   const pieData = report
     ? {
-        labels: report.category_breakdown.map((c) => c.category_name),
+        labels: report.categories.map((c) => c.name),
         datasets: [
           {
-            data: report.category_breakdown.map((c) => c.total_amount),
+            data: report.categories.map((c) => c.total),
             backgroundColor: [
               "#FF6384",
               "#36A2EB",
@@ -168,7 +168,7 @@ const Reports = () => {
             <div className="card" style={{ borderLeft: "4px solid #f44336" }}>
               <p style={{ color: "#888", margin: 0 }}>Monthly Expenses</p>
               <h3>
-                ${parseFloat(report.summary.total_expenses).toLocaleString()}
+                ${parseFloat(report.summary.total_expense).toLocaleString()}
               </h3>
             </div>
             <div className="card" style={{ borderLeft: "4px solid #2196f3" }}>
@@ -198,7 +198,7 @@ const Reports = () => {
 
             <div className="card">
               <h3>Expense Breakdown</h3>
-              {report.category_breakdown.length > 0 ? (
+              {report.categories.length > 0 ? (
                 <Pie data={pieData} />
               ) : (
                 <p
@@ -232,18 +232,15 @@ const Reports = () => {
                   >
                     <th style={{ padding: "0.8rem" }}>Category</th>
                     <th style={{ padding: "0.8rem" }}>Type</th>
-                    <th style={{ padding: "0.8rem" }}>Transaction Count</th>
                     <th style={{ padding: "0.8rem", textAlign: "right" }}>
                       Total Amount
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {report.category_breakdown.map((item, index) => (
+                  {report.categories.map((item, index) => (
                     <tr key={index} style={{ borderBottom: "1px solid #222" }}>
-                      <td style={{ padding: "0.8rem" }}>
-                        {item.category_name}
-                      </td>
+                      <td style={{ padding: "0.8rem" }}>{item.name}</td>
                       <td style={{ padding: "0.8rem" }}>
                         <span
                           style={{
@@ -254,9 +251,6 @@ const Reports = () => {
                           {item.type}
                         </span>
                       </td>
-                      <td style={{ padding: "0.8rem" }}>
-                        {item.transaction_count}
-                      </td>
                       <td
                         style={{
                           padding: "0.8rem",
@@ -264,7 +258,7 @@ const Reports = () => {
                           fontWeight: "bold",
                         }}
                       >
-                        ${parseFloat(item.total_amount).toLocaleString()}
+                        ${parseFloat(item.total).toLocaleString()}
                       </td>
                     </tr>
                   ))}
